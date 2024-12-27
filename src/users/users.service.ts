@@ -4,7 +4,6 @@ import { hashText } from 'src/utils/hash-text/hash-text';
 import { Not } from 'typeorm';
 import { UserNotFoundException } from 'src/exceptions/user/user-not-found.exception';
 import { EmailTakenException } from 'src/exceptions/user/email-taken.exception';
-import { TriedToUpdateNonExistingUserException } from 'src/exceptions/user/tried-to-update-non-existing-user.exception';
 import { TriedToRemoveNonExistingUserException } from 'src/exceptions/user/tried-to-remove-non-existing-user.exception';
 import { CreateUserDto } from './dto/request/create-user.dto';
 import { UpdateUserDto } from './dto/request/update-user.dto';
@@ -22,11 +21,6 @@ export class UsersService {
     password,
     ...rest
   }: CreateUserDto): Promise<UserResponseDto> {
-    const isEmailTaken = await this.isEmailTaken(email);
-    console.log('IS EMAIL TAKEN: ', isEmailTaken);
-
-    if (isEmailTaken) throw new EmailTakenException();
-
     const user = new UserEntity();
 
     Object.assign(user, {
@@ -43,8 +37,7 @@ export class UsersService {
   }
 
   async findOne(id: string): Promise<UserResponseDto> {
-    const user = await this.findOneById(id);
-    if (!user) throw new UserNotFoundException();
+    const user = await this.validateUser(id);
     return plainToInstance(UserResponseDto, user);
   }
 
@@ -53,12 +46,9 @@ export class UsersService {
     { email, password, ...rest }: UpdateUserDto,
   ): Promise<UserResponseDto> {
     const isEmailTaken = await this.isEmailTaken(email, id);
-
     if (isEmailTaken) throw new EmailTakenException();
 
-    const user = await this.findOneById(id);
-
-    if (!user) throw new TriedToUpdateNonExistingUserException();
+    const user = await this.validateUser(id);
 
     Object.assign(user, {
       email,
@@ -70,13 +60,9 @@ export class UsersService {
   }
 
   async remove(id: string): Promise<void> {
-    const user = await this.findOneById(id);
-    if (!user) throw new TriedToRemoveNonExistingUserException();
-    await user.remove();
-  }
-
-  async findOneById(id: string): Promise<UserEntity> {
-    return (await UserEntity.findOneBy({ id })) ?? null;
+    const result = await UserEntity.delete({ id });
+    if (result.affected === 0)
+      throw new TriedToRemoveNonExistingUserException();
   }
 
   async isEmailTaken(email: string): Promise<boolean>;
@@ -105,5 +91,17 @@ export class UsersService {
     Object.assign(userToUpdate, restOfNewUser);
 
     return await userToUpdate.save();
+  }
+
+  async validateUser(id: string): Promise<UserEntity> {
+    try {
+      return await UserEntity.findOneByOrFail({ id });
+    } catch (error) {
+      throw new UserNotFoundException();
+    }
+  }
+
+  async findOneById(id: string): Promise<UserEntity> {
+    return (await UserEntity.findOneBy({ id })) ?? null;
   }
 }

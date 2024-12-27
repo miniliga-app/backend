@@ -28,7 +28,7 @@ export class SeasonEntity extends BasicEntity implements ISeasonEntity {
   })
   profilePicture: string;
 
-  @OneToMany(type => LeagueEntity, leagueEntity => leagueEntity.season, {
+  @OneToMany(() => LeagueEntity, leagueEntity => leagueEntity.season, {
     cascade: true,
     eager: true,
   })

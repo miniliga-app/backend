@@ -39,7 +39,6 @@ export class CreatePlayerDataDto implements ICreatePlayerDataDto {
   number: number;
 
   @IsOptional()
-  @Transform(({ value }) => value ?? null)
   @IsString({ each: true })
   @IsUUID(4, { each: true })
   /**

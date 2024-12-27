@@ -1,17 +1,42 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateLeagueDto } from './dto/request/create-league.dto';
 import { UpdateLeagueDto } from './dto/request/update-league.dto';
 import { LeagueEntity } from './entities/league.entity';
 import { plainToInstance } from 'class-transformer';
 import { LeagueResponseDto } from './dto/response/league-response.dto';
 import { TeamEntity } from 'src/teams/entities/team.entity';
+import { TeamsService } from 'src/teams/teams.service';
 
 @Injectable()
 export class LeaguesService {
+  constructor(
+    @Inject(forwardRef(() => TeamsService))
+    private readonly teamsService: TeamsService,
+  ) {}
   async create(createLeagueDto: CreateLeagueDto): Promise<LeagueResponseDto> {
     const league = new LeagueEntity();
 
     Object.assign(league, createLeagueDto);
+
+    return plainToInstance(LeagueResponseDto, await league.save());
+  }
+
+  async update(
+    id: string,
+    { teams }: UpdateLeagueDto,
+  ): Promise<LeagueResponseDto> {
+    const league = await this.validateLeague(id);
+
+    const teamsToAssign: TeamEntity[] = await Promise.all(
+      teams.map(async teamId => await this.teamsService.validateTeam(teamId)),
+    );
+
+    league.teams = teamsToAssign;
 
     return plainToInstance(LeagueResponseDto, await league.save());
   }
@@ -24,6 +49,7 @@ export class LeaguesService {
         },
       },
     });
+
     return plainToInstance(LeagueResponseDto, leagues);
   }
 
@@ -33,21 +59,10 @@ export class LeaguesService {
     return plainToInstance(LeagueResponseDto, league);
   }
 
-  async update(
-    id: string,
-    updateLeagueDto: UpdateLeagueDto,
-  ): Promise<LeagueResponseDto> {
-    const league = await this.validateLeague(id);
-
-    Object.assign(league, updateLeagueDto);
-
-    return plainToInstance(LeagueResponseDto, await league.save());
-  }
-
   async remove(id: string): Promise<void> {
-    const league = await this.validateLeague(id);
-
-    await league.remove();
+    const { affected } = await LeagueEntity.delete({ id });
+    if (!affected)
+      throw new NotFoundException('Tried to remove non existing league');
   }
 
   async findOneById(id: string): Promise<LeagueEntity> {

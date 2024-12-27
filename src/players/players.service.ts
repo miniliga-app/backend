@@ -19,6 +19,7 @@ import { UpdatePlayerDto } from './dto/request/update-player.dto';
 import { CreatePlayerDto } from './dto/request/create-player.dto';
 import { TeamEntity } from 'src/teams/entities/team.entity';
 import { PlayerDataEntity } from './entities/player-data.entity';
+import { UserResponseDto } from 'src/users/dto/response/user-response.dto';
 
 @Injectable()
 export class PlayersService {
@@ -51,13 +52,14 @@ export class PlayersService {
     password,
     ...rest
   }: CreatePlayerDto): Promise<PlayerResponseDto> {
-    if (await this.usersService.isEmailTaken(email))
-      throw new EmailTakenException();
-    const player = Object.assign(new UserEntity(), {
+    const player = new UserEntity();
+
+    Object.assign(player, {
       email,
       password: await hashText(password),
       ...rest,
     });
+
     return plainToInstance(PlayerResponseDto, await player.save());
   }
 
@@ -73,8 +75,9 @@ export class PlayersService {
   }
 
   async remove(id: string): Promise<void> {
-    const player = await this.validatePlayer(id);
-    await player.remove();
+    const { affected } = await UserEntity.delete({ id, role: UserRole.PLAYER });
+    if (!affected)
+      throw new NotFoundException('Tried to remove non existing player');
   }
 
   async isPlayerAvailableInExistingTeam({
@@ -115,9 +118,8 @@ export class PlayersService {
       .where('player.id = :playerId', { playerId })
       .getOne();
 
-    if (!existingPlayer) {
+    if (!existingPlayer)
       throw new NotFoundException('Tried to add non-existing player');
-    }
 
     const conflictingPlayer = await this.dataSource
       .createQueryBuilder()
@@ -243,7 +245,8 @@ export class PlayersService {
     return (await UserEntity.findOneBy({ id, role: UserRole.PLAYER })) ?? null;
   }
 
-  async findAllPlayers(): Promise<UserEntity[]> {
-    return await UserEntity.findBy({ role: UserRole.PLAYER });
+  async findAllPlayers(): Promise<PlayerResponseDto[]> {
+    const players = await UserEntity.findBy({ role: UserRole.PLAYER });
+    return plainToInstance(PlayerResponseDto, players);
   }
 }

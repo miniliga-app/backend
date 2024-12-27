@@ -14,6 +14,7 @@ import { IsPlayerDataValid } from 'src/decorators/validation/is-player-data-vali
 import { CreatePlayerDataDto } from 'src/players/dto/player-data/create-player-data.dto';
 
 import { ICreateUserDto, UserRole } from 'src/types/user';
+import { IsEmailNotTakenForNewUser } from 'src/validators/is-email-not-taken/is-email-not-taken-for-new-user.validator';
 
 export class CreateUserDto implements ICreateUserDto {
   @ApiProperty({ type: 'string', description: 'Name of user' })
@@ -31,6 +32,7 @@ export class CreateUserDto implements ICreateUserDto {
   @ApiProperty({ type: 'string', description: 'Email of user' })
   @IsNotEmpty()
   @IsEmail()
+  @IsEmailNotTakenForNewUser()
   email: string;
 
   @ApiProperty({ type: 'string', description: 'Password of user' })

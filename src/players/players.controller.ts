@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { PlayersService } from './players.service';
 import { CreatePlayerDto } from './dto/request/create-player.dto';
@@ -18,6 +20,7 @@ export class PlayersController {
   constructor(private readonly playersService: PlayersService) {}
 
   @Post('/')
+  @HttpCode(HttpStatus.CREATED)
   async create(
     @Body() createPlayerDto: CreatePlayerDto,
   ): Promise<PlayerResponseDto> {
@@ -25,11 +28,13 @@ export class PlayersController {
   }
 
   @Get('/')
+  @HttpCode(HttpStatus.FOUND)
   async findAll(): Promise<PlayerResponseDto[]> {
     return this.playersService.findAll();
   }
 
   @Get(':id')
+  @HttpCode(HttpStatus.FOUND)
   async findOne(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<PlayerResponseDto> {
@@ -37,6 +42,7 @@ export class PlayersController {
   }
 
   @Patch(':id')
+  @HttpCode(HttpStatus.OK)
   async update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updatePlayerDto: UpdatePlayerDto,
@@ -45,6 +51,7 @@ export class PlayersController {
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   async remove(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<void> {
