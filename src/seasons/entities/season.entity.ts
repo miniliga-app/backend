@@ -17,7 +17,6 @@ export class SeasonEntity extends BasicEntity implements ISeasonEntity {
 
   @Column({
     type: 'text',
-    unique: true,
   })
   name: string;
 
