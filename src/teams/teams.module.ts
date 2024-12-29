@@ -8,6 +8,9 @@ import { TeamJoinRequestsService } from './team-join-request/team-join-request.s
   imports: [forwardRef(() => PlayersModule)],
   controllers: [TeamsController],
   providers: [TeamsService, TeamJoinRequestsService],
-  exports: [TeamsService, TeamJoinRequestsService],
+  exports: [
+    forwardRef(() => TeamsService),
+    forwardRef(() => TeamJoinRequestsService),
+  ],
 })
 export class TeamsModule {}

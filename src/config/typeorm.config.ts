@@ -3,11 +3,9 @@ import {
   TypeOrmModuleAsyncOptions,
   TypeOrmModuleOptions,
 } from '@nestjs/typeorm';
-import { join } from 'path';
-import { cwd } from 'process';
 import { DataSource } from 'typeorm';
 
-export const typeOrmConfigAsync: TypeOrmModuleAsyncOptions = {
+export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
   inject: [ConfigService],
   useFactory: async (configService: ConfigService) => {
     const getEnv = <T>(envVar: string) => configService.get<T>(envVar);

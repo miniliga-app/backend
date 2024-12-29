@@ -13,6 +13,6 @@ import { LeaguesModule } from 'src/leagues/leagues.module';
   ],
   controllers: [PlayersController],
   providers: [PlayersService],
-  exports: [PlayersService],
+  exports: [forwardRef(() => PlayersService)],
 })
 export class PlayersModule {}

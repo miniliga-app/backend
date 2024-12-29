@@ -6,7 +6,7 @@ import {
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { typeOrmConfigAsync } from './config/typeorm.config';
+import { typeOrmAsyncConfig } from './config/typeorm.config';
 import { ConfigModule } from '@nestjs/config';
 import { configModuleConfig } from './config/config-module.config';
 import { UsersModule } from './users/users.module';
@@ -21,7 +21,7 @@ import { SetupModule } from './setup/setup.module';
 @Module({
   imports: [
     ConfigModule.forRoot(configModuleConfig),
-    TypeOrmModule.forRootAsync(typeOrmConfigAsync),
+    TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
     UsersModule,
     AuthModule,
     PlayersModule,
