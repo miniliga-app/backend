@@ -1,6 +1,7 @@
 import { PlayerDataEntity } from 'src/players/entities/player-data.entity';
 import { Modify } from './generic/modify';
 import { LeagueEntity } from 'src/leagues/entities/league.entity';
+import { TeamJoinRequestEntity } from 'src/teams/entities/team-join-request.entity';
 
 interface ICreateTeamDto {
   shortName: string; // 3 letter name
@@ -16,7 +17,7 @@ type ITeamEntity = Modify<
     captain: PlayerDataEntity;
     players: PlayerDataEntity[];
     league: LeagueEntity;
-    requestsToJoin: PlayerDataEntity[];
+    requestsToJoin: TeamJoinRequestEntity[];
   }
 >;
 

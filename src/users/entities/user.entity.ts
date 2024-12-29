@@ -48,6 +48,6 @@ export class UserEntity extends BasicEntity implements IUserEntity {
   })
   currentTokenId: string;
 
-  @OneToOne(type => PlayerDataEntity, playerDataEntity => playerDataEntity.user)
+  @OneToOne(() => PlayerDataEntity, playerDataEntity => playerDataEntity.user)
   playerData: PlayerDataEntity;
 }

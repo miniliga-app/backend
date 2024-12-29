@@ -5,13 +5,17 @@ import { BasicEntity } from 'src/templates/basic-entity.template';
 
 @Entity('team_join_requests')
 export class TeamJoinRequestEntity extends BasicEntity {
-  @ManyToOne(() => TeamEntity, team => team.requestsToJoin, {
+  @ManyToOne(() => TeamEntity, teamEntity => teamEntity.requestsToJoin, {
     onDelete: 'CASCADE',
   })
   team: TeamEntity;
 
-  @ManyToOne(() => PlayerDataEntity, playerData => playerData.requestsToJoin, {
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne(
+    () => PlayerDataEntity,
+    playerDataEntity => playerDataEntity.requestsToJoin,
+    {
+      onDelete: 'CASCADE',
+    },
+  )
   player: PlayerDataEntity;
 }

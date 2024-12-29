@@ -3,9 +3,10 @@ import { LeagueEntity } from 'src/leagues/entities/league.entity';
 import { PlayerDataEntity } from 'src/players/entities/player-data.entity';
 import { TeamJoinRequestEntity } from './team-join-request.entity';
 import { Column, Entity, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
+import { ITeamEntity } from 'src/types/team';
 
-@Entity()
-export class TeamEntity extends BasicEntity {
+@Entity('teams')
+export class TeamEntity extends BasicEntity implements ITeamEntity {
   @Column({
     type: 'varchar',
     length: 3,
@@ -39,7 +40,7 @@ export class TeamEntity extends BasicEntity {
   @ManyToOne(() => LeagueEntity, leagueEntity => leagueEntity.teams)
   league: LeagueEntity;
 
-  @OneToMany(() => TeamJoinRequestEntity, request => request.team, {
+  @OneToMany(() => TeamJoinRequestEntity, requestEntity => requestEntity.team, {
     cascade: true,
   })
   requestsToJoin: TeamJoinRequestEntity[];
