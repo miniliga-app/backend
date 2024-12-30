@@ -9,6 +9,9 @@ import {
   ParseUUIDPipe,
   HttpCode,
   HttpStatus,
+  Inject,
+  forwardRef,
+  Put,
 } from '@nestjs/common';
 import { PlayersService } from './players.service';
 import { CreatePlayerDto } from './dto/request/create-player.dto';
@@ -17,44 +20,47 @@ import { PlayerResponseDto } from './dto/response/player-response.dto';
 
 @Controller('players')
 export class PlayersController {
-  constructor(private readonly playersService: PlayersService) {}
+  constructor(
+    @Inject(forwardRef(() => PlayersService))
+    private readonly playersService: PlayersService,
+  ) {}
 
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  async create(
+  async createPlayer(
     @Body() createPlayerDto: CreatePlayerDto,
   ): Promise<PlayerResponseDto> {
-    return this.playersService.create(createPlayerDto);
+    return this.playersService.createPlayer(createPlayerDto);
   }
 
   @Get('/')
   @HttpCode(HttpStatus.FOUND)
-  async findAll(): Promise<PlayerResponseDto[]> {
+  async findAllPlayers(): Promise<PlayerResponseDto[]> {
     return this.playersService.findAll();
   }
 
-  @Get(':id')
+  @Get('/:id')
   @HttpCode(HttpStatus.FOUND)
-  async findOne(
+  async findOnePlayer(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<PlayerResponseDto> {
-    return this.playersService.findOne(id);
+    return this.playersService.findOnePlayer(id);
   }
 
-  @Patch(':id')
+  @Put('/:id')
   @HttpCode(HttpStatus.OK)
-  async update(
+  async updatePlayer(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updatePlayerDto: UpdatePlayerDto,
   ): Promise<PlayerResponseDto> {
-    return this.playersService.update(id, updatePlayerDto);
+    return this.playersService.updatePlayer(id, updatePlayerDto);
   }
 
-  @Delete(':id')
+  @Delete('/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(
+  async removeOnePlayer(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<void> {
-    return this.playersService.remove(id);
+    return this.playersService.removeOnePlayer(id);
   }
 }

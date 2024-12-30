@@ -42,12 +42,12 @@ export class PlayersService {
     return plainToInstance(PlayerResponseDto, players);
   }
 
-  async findOne(id: string): Promise<PlayerResponseDto> {
+  async findOnePlayer(id: string): Promise<PlayerResponseDto> {
     const player = await this.validatePlayer(id);
     return plainToInstance(PlayerResponseDto, player);
   }
 
-  async create({
+  async createPlayer({
     email,
     password,
     ...rest
@@ -63,7 +63,7 @@ export class PlayersService {
     return plainToInstance(PlayerResponseDto, await player.save());
   }
 
-  async update(
+  async updatePlayer(
     id: string,
     { email, ...rest }: UpdatePlayerDto,
   ): Promise<PlayerResponseDto> {
@@ -74,7 +74,7 @@ export class PlayersService {
     return plainToInstance(PlayerResponseDto, await player.save());
   }
 
-  async remove(id: string): Promise<void> {
+  async removeOnePlayer(id: string): Promise<void> {
     const { affected } = await UserEntity.delete({ id, role: UserRole.PLAYER });
     if (!affected)
       throw new NotFoundException('Tried to remove non existing player');
