@@ -16,7 +16,7 @@ export class UsersService {
     return (await UserEntity.findOneBy({ currentTokenId: token })) ?? null;
   }
 
-  async create({
+  async createUser({
     email,
     password,
     ...rest
@@ -32,16 +32,16 @@ export class UsersService {
     return plainToInstance(UserResponseDto, await user.save());
   }
 
-  async findAll(): Promise<UserResponseDto[]> {
+  async findAllUsers(): Promise<UserResponseDto[]> {
     return plainToInstance(UserResponseDto, await UserEntity.find());
   }
 
-  async findOne(id: string): Promise<UserResponseDto> {
+  async findOneUser(id: string): Promise<UserResponseDto> {
     const user = await this.validateUser(id);
     return plainToInstance(UserResponseDto, user);
   }
 
-  async update(
+  async updateUser(
     id: string,
     { email, password, ...rest }: UpdateUserDto,
   ): Promise<UserResponseDto> {
@@ -59,7 +59,7 @@ export class UsersService {
     return plainToInstance(UserResponseDto, await user.save());
   }
 
-  async remove(id: string): Promise<void> {
+  async removeOneUser(id: string): Promise<void> {
     const result = await UserEntity.delete({ id });
     if (result.affected === 0)
       throw new TriedToRemoveNonExistingUserException();
