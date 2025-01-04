@@ -18,7 +18,9 @@ export class LeaguesService {
     @Inject(forwardRef(() => TeamsService))
     private readonly teamsService: TeamsService,
   ) {}
-  async create(createLeagueDto: CreateLeagueDto): Promise<LeagueResponseDto> {
+  async createLeague(
+    createLeagueDto: CreateLeagueDto,
+  ): Promise<LeagueResponseDto> {
     const league = new LeagueEntity();
 
     Object.assign(league, createLeagueDto);
@@ -26,7 +28,7 @@ export class LeaguesService {
     return plainToInstance(LeagueResponseDto, await league.save());
   }
 
-  async update(
+  async updateLeague(
     id: string,
     { teams }: UpdateLeagueDto,
   ): Promise<LeagueResponseDto> {
@@ -41,7 +43,7 @@ export class LeaguesService {
     return plainToInstance(LeagueResponseDto, await league.save());
   }
 
-  async findAll(): Promise<LeagueResponseDto[]> {
+  async findAllLeagues(): Promise<LeagueResponseDto[]> {
     const leagues = await LeagueEntity.find({
       relations: {
         teams: {
@@ -53,13 +55,13 @@ export class LeaguesService {
     return plainToInstance(LeagueResponseDto, leagues);
   }
 
-  async findOne(id: string): Promise<LeagueResponseDto> {
+  async findOneLeague(id: string): Promise<LeagueResponseDto> {
     const league = await this.validateLeague(id);
 
     return plainToInstance(LeagueResponseDto, league);
   }
 
-  async remove(id: string): Promise<void> {
+  async removeOneLeague(id: string): Promise<void> {
     const { affected } = await LeagueEntity.delete({ id });
     if (!affected)
       throw new NotFoundException('Tried to remove non existing league');

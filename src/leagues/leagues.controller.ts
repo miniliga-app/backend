@@ -14,6 +14,8 @@ import {
 import { LeaguesService } from './leagues.service';
 import { CreateLeagueDto } from './dto/request/create-league.dto';
 import { UpdateLeagueDto } from './dto/request/update-league.dto';
+import { LeagueResponseDto } from './dto/response/league-response.dto';
+import { parseUuidPipe } from 'src/pipes';
 
 @Controller('leagues')
 export class LeaguesController {
@@ -24,34 +26,38 @@ export class LeaguesController {
 
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() createLeagueDto: CreateLeagueDto) {
-    return this.leaguesService.create(createLeagueDto);
+  async createLeague(
+    @Body() createLeagueDto: CreateLeagueDto,
+  ): Promise<LeagueResponseDto> {
+    return this.leaguesService.createLeague(createLeagueDto);
   }
 
   @Get('/')
   @HttpCode(HttpStatus.FOUND)
-  async findAll() {
-    return this.leaguesService.findAll();
+  async findAllLeagues(): Promise<LeagueResponseDto[]> {
+    return this.leaguesService.findAllLeagues();
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.FOUND)
-  async findOne(@Param('id') id: string) {
-    return this.leaguesService.findOne(id);
+  async findOneLeague(
+    @Param('id', parseUuidPipe) id: string,
+  ): Promise<LeagueResponseDto> {
+    return this.leaguesService.findOneLeague(id);
   }
 
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
-  async update(
-    @Param('id') id: string,
+  async updateLeague(
+    @Param('id', parseUuidPipe) id: string,
     @Body() updateLeagueDto: UpdateLeagueDto,
-  ) {
-    return this.leaguesService.update(id, updateLeagueDto);
+  ): Promise<LeagueResponseDto> {
+    return this.leaguesService.updateLeague(id, updateLeagueDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id') id: string) {
-    return this.leaguesService.remove(id);
+  async removeOneLeague(@Param('id') id: string): Promise<void> {
+    return this.leaguesService.removeOneLeague(id);
   }
 }
