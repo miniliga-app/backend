@@ -16,6 +16,7 @@ import { UpdateTeamDto } from './dto/request/update-team.dto';
 import { TeamResponseDto } from './dto/response/team-response.dto';
 import { TeamJoinRequestEntity } from './entities/team-join-request.entity';
 import { TeamJoinRequestsService } from './team-join-request/team-join-request.service';
+import { parseUuidPipe } from 'src/pipes';
 
 @Controller('teams')
 export class TeamsController {
@@ -28,68 +29,81 @@ export class TeamsController {
   ) {}
 
   @Post('/')
-  async create(@Body() createTeamDto: CreateTeamDto): Promise<TeamResponseDto> {
-    return this.teamsService.create(createTeamDto);
+  async createTeam(
+    @Body() createTeamDto: CreateTeamDto,
+  ): Promise<TeamResponseDto> {
+    return this.teamsService.createTeam(createTeamDto);
   }
 
   @Get('/')
-  async findAll(): Promise<TeamResponseDto[]> {
-    return this.teamsService.findAll();
+  async findAllTeams(): Promise<TeamResponseDto[]> {
+    return this.teamsService.findAllTeams();
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string): Promise<TeamResponseDto> {
-    return this.teamsService.findOne(id);
+  @Get('/:id')
+  async findOneTeam(
+    @Param('id', parseUuidPipe) id: string,
+  ): Promise<TeamResponseDto> {
+    return this.teamsService.findOneTeam(id);
   }
 
-  @Patch(':id')
-  async update(
-    @Param('id') id: string,
+  @Patch('/:id')
+  async updateTeam(
+    @Param('id', parseUuidPipe) id: string,
     @Body() updateTeamDto: UpdateTeamDto,
   ): Promise<TeamResponseDto> {
-    return this.teamsService.update(id, updateTeamDto);
+    return this.teamsService.updateTeam(id, updateTeamDto);
   }
 
-  @Delete(':id')
-  async remove(@Param('id') id: string): Promise<void> {
-    return this.teamsService.remove(id);
+  @Delete('/:id')
+  async removeOneTeam(@Param('id', parseUuidPipe) id: string): Promise<void> {
+    return this.teamsService.removeOneTeam(id);
   }
 
-  @Post(':id/requests-to-join')
-  async createJoinRequest(
-    @Param('id') teamId: string,
-    @Query('playerId') playerId: string,
+  @Post('/:id/requests-to-join')
+  async createTeamJoinRequest(
+    @Param('id', parseUuidPipe) teamId: string,
+    @Query('playerId', parseUuidPipe) playerId: string,
   ): Promise<void> {
-    return this.teamJoinRequestsService.createRequest({ teamId, playerId });
+    return this.teamJoinRequestsService.createTeamJoinRequest({
+      teamId,
+      playerId,
+    });
   }
 
-  @Post(':id/requests-to-join/accept')
-  async acceptJoinRequest(
-    @Param('id') teamId: string,
-    @Query('playerId') playerId: string,
+  @Post('/:id/requests-to-join/accept')
+  async acceptTeamJoinRequest(
+    @Param('id', parseUuidPipe) teamId: string,
+    @Query('playerId', parseUuidPipe) playerId: string,
   ): Promise<void> {
-    return this.teamJoinRequestsService.acceptRequest({ teamId, playerId });
+    return this.teamJoinRequestsService.acceptTeamJoinRequest({
+      teamId,
+      playerId,
+    });
   }
 
-  @Post(':id/requests-to-join/reject')
-  async rejectJoinRequest(
-    @Param('id') teamId: string,
-    @Query('playerId') playerId: string,
+  @Post('/:id/requests-to-join/reject')
+  async rejectTeamJoinRequest(
+    @Param('id', parseUuidPipe) teamId: string,
+    @Query('playerId', parseUuidPipe) playerId: string,
   ): Promise<void> {
-    return this.teamJoinRequestsService.rejectRequest({ teamId, playerId });
+    return this.teamJoinRequestsService.rejectTeamJoinRequest({
+      teamId,
+      playerId,
+    });
   }
 
-  @Get(':id/requests-to-join')
-  async getJoinRequestsByTeam(
-    @Param('id') teamId: string,
+  @Get('/:id/requests-to-join')
+  async getTeamJoinRequestsByTeamId(
+    @Param('id', parseUuidPipe) teamId: string,
   ): Promise<TeamJoinRequestEntity[]> {
-    return this.teamJoinRequestsService.getRequestsByTeam(teamId);
+    return this.teamJoinRequestsService.getTeamJoinRequestsByTeamId(teamId);
   }
 
-  @Get('/requests-to-join/player/:playerId')
-  async getJoinRequestsByPlayer(
-    @Param('playerId') playerId: string,
+  @Get('/requests-to-join')
+  async getTeamJoinRequestsByPlayerId(
+    @Query('playerId', parseUuidPipe) playerId: string,
   ): Promise<TeamJoinRequestEntity[]> {
-    return this.teamJoinRequestsService.getRequestsByPlayer(playerId);
+    return this.teamJoinRequestsService.getTeamJoinRequestsByPlayerId(playerId);
   }
 }

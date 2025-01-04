@@ -25,7 +25,7 @@ export class TeamJoinRequestsService {
     return player;
   }
 
-  async createRequest({
+  async createTeamJoinRequest({
     teamId,
     playerId,
   }: {
@@ -48,7 +48,7 @@ export class TeamJoinRequestsService {
     await TeamJoinRequestEntity.create({ team, player }).save();
   }
 
-  async acceptRequest({
+  async acceptTeamJoinRequest({
     teamId,
     playerId,
   }: {
@@ -78,7 +78,7 @@ export class TeamJoinRequestsService {
     ]);
   }
 
-  async rejectRequest({
+  async rejectTeamJoinRequest({
     teamId,
     playerId,
   }: {
@@ -94,12 +94,14 @@ export class TeamJoinRequestsService {
     await request.remove();
   }
 
-  async getRequestsByTeam(teamId: string): Promise<TeamJoinRequestEntity[]> {
+  async getTeamJoinRequestsByTeamId(
+    teamId: string,
+  ): Promise<TeamJoinRequestEntity[]> {
     await this.findTeam(teamId);
     return TeamJoinRequestEntity.find({ where: { team: { id: teamId } } });
   }
 
-  async getRequestsByPlayer(
+  async getTeamJoinRequestsByPlayerId(
     playerId: string,
   ): Promise<TeamJoinRequestEntity[]> {
     await this.findPlayer(playerId);

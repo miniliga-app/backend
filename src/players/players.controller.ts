@@ -17,6 +17,7 @@ import { PlayersService } from './players.service';
 import { CreatePlayerDto } from './dto/request/create-player.dto';
 import { UpdatePlayerDto } from './dto/request/update-player.dto';
 import { PlayerResponseDto } from './dto/response/player-response.dto';
+import { parseUuidPipe } from 'src/pipes';
 
 @Controller('players')
 export class PlayersController {
@@ -42,7 +43,7 @@ export class PlayersController {
   @Get('/:id')
   @HttpCode(HttpStatus.FOUND)
   async findOnePlayer(
-    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @Param('id', parseUuidPipe) id: string,
   ): Promise<PlayerResponseDto> {
     return this.playersService.findOnePlayer(id);
   }
@@ -50,7 +51,7 @@ export class PlayersController {
   @Put('/:id')
   @HttpCode(HttpStatus.OK)
   async updatePlayer(
-    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @Param('id', parseUuidPipe) id: string,
     @Body() updatePlayerDto: UpdatePlayerDto,
   ): Promise<PlayerResponseDto> {
     return this.playersService.updatePlayer(id, updatePlayerDto);
@@ -58,9 +59,7 @@ export class PlayersController {
 
   @Delete('/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async removeOnePlayer(
-    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-  ): Promise<void> {
+  async removeOnePlayer(@Param('id', parseUuidPipe) id: string): Promise<void> {
     return this.playersService.removeOnePlayer(id);
   }
 }

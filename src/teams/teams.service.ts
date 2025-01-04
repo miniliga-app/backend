@@ -11,7 +11,7 @@ import { Not } from 'typeorm';
 
 @Injectable()
 export class TeamsService {
-  async create({ shortName, ...rest }: CreateTeamDto): Promise<TeamEntity> {
+  async createTeam({ shortName, ...rest }: CreateTeamDto): Promise<TeamEntity> {
     const team = new TeamEntity();
 
     Object.assign(team, {
@@ -22,17 +22,17 @@ export class TeamsService {
     return await team.save();
   }
 
-  async findAll(): Promise<TeamEntity[]> {
+  async findAllTeams(): Promise<TeamEntity[]> {
     return await TeamEntity.find();
   }
 
-  async findOne(id: string): Promise<TeamEntity> {
+  async findOneTeam(id: string): Promise<TeamEntity> {
     const team = await TeamEntity.findOneBy({ id });
     if (!team) throw new NotFoundException('Team not found');
     return team;
   }
 
-  async update(
+  async updateTeam(
     id: string,
     { shortName, ...rest }: UpdateTeamDto,
   ): Promise<TeamEntity> {
@@ -60,7 +60,7 @@ export class TeamsService {
     return await team.save();
   }
 
-  async remove(id: string): Promise<void> {
+  async removeOneTeam(id: string): Promise<void> {
     const result = await TeamEntity.delete({ id });
     if (result.affected === 0)
       throw new NotFoundException('Tried to remove not existing team');
@@ -77,7 +77,7 @@ export class TeamsService {
   }
 
   async isTeamExists(id: string): Promise<boolean> {
-    return !!(await this.findOne(id));
+    return !!(await this.findOneTeam(id));
   }
 
   async validateTeam(teamId: string): Promise<TeamEntity> {
