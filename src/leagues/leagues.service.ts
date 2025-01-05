@@ -11,6 +11,8 @@ import { plainToInstance } from 'class-transformer';
 import { LeagueResponseDto } from './dto/response/league-response.dto';
 import { TeamEntity } from 'src/teams/entities/team.entity';
 import { TeamsService } from 'src/teams/teams.service';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class LeaguesService {
@@ -44,13 +46,9 @@ export class LeaguesService {
   }
 
   async findAllLeagues(): Promise<LeagueResponseDto[]> {
-    const leagues = await LeagueEntity.find({
-      relations: {
-        teams: {
-          players: true,
-        },
-      },
-    });
+    const leagues = await LeagueEntity.createQueryBuilder('league')
+      .leftJoinAndSelect('league.teams', 'team')
+      .getMany();
 
     return plainToInstance(LeagueResponseDto, leagues);
   }

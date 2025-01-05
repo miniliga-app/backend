@@ -1,7 +1,14 @@
 import { BasicEntity } from 'src/templates/basic-entity.template';
 import { TeamEntity } from 'src/teams/entities/team.entity';
 import { UserEntity } from 'src/users/entities/user.entity';
-import { Column, Entity, ManyToMany, OneToMany, OneToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToMany,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 import { TeamJoinRequestEntity } from 'src/teams/entities/team-join-request.entity';
 import { DominantLeg, PlayerPosition } from 'src/types/enum';
 

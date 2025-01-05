@@ -1,26 +1,41 @@
-import { Injectable } from '@nestjs/common';
-import { CreateSeasonDto } from './dto/create-season.dto';
-import { UpdateSeasonDto } from './dto/update-season.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateSeasonDto } from './dto/request/create-season.dto';
+import { UpdateSeasonDto } from './dto/request/update-season.dto';
+import { SeasonResponseDto } from './dto/response/season-response.dto';
+import { SeasonEntity } from './entities/season.entity';
 
 @Injectable()
 export class SeasonsService {
-  create(createSeasonDto: CreateSeasonDto) {
-    return 'This action adds a new season';
+  async createSeason(
+    createSeasonDto: CreateSeasonDto,
+  ): Promise<SeasonResponseDto> {
+    return new SeasonEntity();
   }
 
-  findAll() {
-    return `This action returns all seasons`;
+  async findAllSeasons(): Promise<SeasonResponseDto[]> {
+    return [new SeasonEntity()];
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} season`;
+  async findOneSeason(id: string): Promise<SeasonResponseDto> {
+    try {
+      return await SeasonEntity.findOneOrFail({
+        relations: ['leagues'],
+        where: { id },
+      });
+    } catch (error) {
+      throw new NotFoundException('Season not found');
+    }
   }
 
-  update(id: number, updateSeasonDto: UpdateSeasonDto) {
-    return `This action updates a #${id} season`;
+  async updateSeason(
+    id: string,
+    updateSeasonDto: UpdateSeasonDto,
+  ): Promise<SeasonResponseDto> {
+    return new SeasonEntity();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} season`;
+  async removeSeason(id: string): Promise<void> {
+    //
+    return;
   }
 }

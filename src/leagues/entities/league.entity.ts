@@ -1,7 +1,7 @@
 import { BasicEntity } from 'src/templates/basic-entity.template';
 import { TeamEntity } from 'src/teams/entities/team.entity';
 import { SeasonEntity } from 'src/seasons/entities/season.entity';
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { ILeagueEntity } from 'src/types/league';
 
 @Entity('leagues')

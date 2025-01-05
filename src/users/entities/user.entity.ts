@@ -1,6 +1,6 @@
 // user.entity.ts
 import { IUserEntity, UserRole } from 'src/types/user';
-import { Column, Entity, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 import { BasicEntity } from 'src/templates/basic-entity.template';
 import { PlayerDataEntity } from 'src/players/entities/player-data.entity';
 
@@ -49,5 +49,6 @@ export class UserEntity extends BasicEntity implements IUserEntity {
   currentTokenId: string;
 
   @OneToOne(() => PlayerDataEntity, playerDataEntity => playerDataEntity.user)
+  @JoinColumn()
   playerData: PlayerDataEntity;
 }
