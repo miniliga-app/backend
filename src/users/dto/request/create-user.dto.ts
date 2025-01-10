@@ -50,10 +50,10 @@ export class CreateUserDto implements ICreateUserDto {
   @IsBase64()
   profilePicture: string;
 
-  @ApiPropertyOptional()
   @ApiProperty({
     type: 'string',
     description: 'Expo push token for notifications',
+    required: false,
   })
   @IsOptional()
   @IsString()
@@ -64,6 +64,11 @@ export class CreateUserDto implements ICreateUserDto {
   //   type: () => CreatePlayerDataDto,
   //   description: 'Specific player data while creating player',
   // })
+  @ApiProperty({
+    type: CreatePlayerDataDto,
+    description: 'Data of player. Exists only if role is UserRole.PLAYER',
+    required: false,
+  })
   @IsPlayerDataValid({
     message: 'player data should not be empty, whether role is player',
   })
