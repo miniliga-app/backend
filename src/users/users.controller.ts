@@ -17,7 +17,7 @@ import { CreateUserDto } from './dto/request/create-user.dto';
 import { UpdateUserDto } from './dto/request/update-user.dto';
 import { UserResponseDto } from './dto/response/user-response.dto';
 import { parseUuidPipe } from 'src/pipes';
-@ApiTags('users')
+@ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(
