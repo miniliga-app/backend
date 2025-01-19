@@ -1,13 +1,13 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthLoginDto } from './dto/auth-login.dto';
+import { AuthLoginDto } from './dto/request/auth-login.dto';
 import { UserEntity } from 'src/users/entities/user.entity';
 import { UserObj } from 'src/decorators/user-obj.decorator';
 import { LoginUserResponse, LogoutUserResponse } from 'src/types/auth';
 import { Auth } from 'src/decorators/auth.decorator';
 import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('auth')
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

@@ -3,7 +3,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { AuthLoginDto } from './dto/auth-login.dto';
+import { AuthLoginDto } from './dto/request/auth-login.dto';
 import { v4 as uuid } from 'uuid';
 import { sign } from 'jsonwebtoken';
 import { UserEntity } from 'src/users/entities/user.entity';

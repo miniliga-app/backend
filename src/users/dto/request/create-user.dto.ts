@@ -60,10 +60,6 @@ export class CreateUserDto implements ICreateUserDto {
   @Length(39, 39)
   expoToken: string;
 
-  // @ApiProperty({
-  //   type: () => CreatePlayerDataDto,
-  //   description: 'Specific player data while creating player',
-  // })
   @ApiProperty({
     type: CreatePlayerDataDto,
     description: 'Data of player. Exists only if role is UserRole.PLAYER',
